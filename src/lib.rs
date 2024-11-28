@@ -8,9 +8,9 @@ pub struct ADBControl {
 }
 
 impl ADBControl {
-    pub fn new(server: Option<ADBServer>, device_id: Option<&String>) -> ADBControl {
+    pub fn new(server: Option<ADBServer>, device_id: Option<String>) -> ADBControl {
         let mut server: ADBServer = server.unwrap_or(ADBServer::default());
-        let device_id: String = device_id.unwrap_or(&String::from("")).clone();
+        let device_id: String = device_id.unwrap_or(String::from(""));
 
         let device: ADBServerDevice = if device_id.is_empty() {
             server.get_device().expect("cannot get device")
