@@ -150,29 +150,17 @@ impl ADBControl {
 
     pub fn keyevent(
         &mut self,
-        keyevent: &str,
+        keycode: &str,
         longpress: bool,
     ) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
-        let mut command_segments = vec!["input", "keyevent", keyevent];
+        let mut command_segments = vec!["input", "keyevent", keycode];
         if longpress {
             command_segments.push("--longpress");
         }
         let _ = self
             .device
             .shell_command(command_segments, &mut output_buffer)
-            .expect("cannot get command output");
-        let command_output =
-            String::from_utf8(output_buffer).expect("cannot convert command output to string");
-
-        Ok(command_output.is_empty())
-    }
-
-    pub fn press(&mut self, key: &str) -> Result<bool, Box<dyn std::error::Error>> {
-        let mut output_buffer = Vec::new();
-        let _ = self
-            .device
-            .shell_command(["input", "key", key], &mut output_buffer)
             .expect("cannot get command output");
         let command_output =
             String::from_utf8(output_buffer).expect("cannot convert command output to string");
