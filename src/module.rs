@@ -3,6 +3,6 @@ use std::default::Default;
 
 #[derive(Debug, Default)]
 pub struct Dimensions {
-    pub width: i32,
-    pub height: i32,
+    pub width: u32,
+    pub height: u32,
 }

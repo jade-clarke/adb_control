@@ -50,10 +50,10 @@ impl ADBControl {
             if line.contains("Physical size:") {
                 let parts: Vec<&str> = line.split(" ").collect();
                 dimensions.width = parts[2].split("x").collect::<Vec<&str>>()[0]
-                    .parse::<i32>()
+                    .parse::<u32>()
                     .expect("cannot parse width");
                 dimensions.height = parts[2].split("x").collect::<Vec<&str>>()[1]
-                    .parse::<i32>()
+                    .parse::<u32>()
                     .expect("cannot parse height");
                 break;
             }
@@ -62,7 +62,7 @@ impl ADBControl {
         Ok(dimensions)
     }
 
-    pub fn tap(&mut self, x: i32, y: i32) -> Result<bool, Box<dyn std::error::Error>> {
+    pub fn tap(&mut self, x: u32, y: u32) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
         let _ = self
             .device
@@ -79,11 +79,11 @@ impl ADBControl {
 
     pub fn swipe(
         &mut self,
-        x1: i32,
-        y1: i32,
-        x2: i32,
-        y2: i32,
-        duration: i32,
+        x1: u32,
+        y1: u32,
+        x2: u32,
+        y2: u32,
+        duration: u32,
     ) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
         let _ = self
@@ -109,9 +109,9 @@ impl ADBControl {
 
     pub fn long_tap(
         &mut self,
-        x: i32,
-        y: i32,
-        duration: i32,
+        x: u32,
+        y: u32,
+        duration: u32,
     ) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
         let _ = self
@@ -148,14 +148,19 @@ impl ADBControl {
         Ok(command_output.is_empty())
     }
 
-    pub fn keyevent(&mut self, keyevent: &str) -> Result<bool, Box<dyn std::error::Error>> {
+    pub fn keyevent(
+        &mut self,
+        keyevent: &str,
+        longpress: bool,
+    ) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
+        let mut command_segments = vec!["input", "keyevent", keyevent];
+        if longpress {
+            command_segments.push("--longpress");
+        }
         let _ = self
             .device
-            .shell_command(
-                ["input", "keyevent", &keyevent],
-                &mut output_buffer,
-            )
+            .shell_command(command_segments, &mut output_buffer)
             .expect("cannot get command output");
         let command_output =
             String::from_utf8(output_buffer).expect("cannot convert command output to string");
@@ -175,7 +180,7 @@ impl ADBControl {
         Ok(command_output.is_empty())
     }
 
-    pub fn roll(&mut self, x: i32, y: i32) -> Result<bool, Box<dyn std::error::Error>> {
+    pub fn roll(&mut self, x: u32, y: u32) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
         let _ = self
             .device
