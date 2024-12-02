@@ -154,10 +154,11 @@ impl ADBControl {
         longpress: bool,
     ) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
-        let mut command_segments = vec!["input", "keyevent", keycode];
+        let mut command_segments = vec!["input", "keyevent"];
         if longpress {
             command_segments.push("--longpress");
         }
+        command_segments.push(keycode);
         let _ = self
             .device
             .shell_command(command_segments, &mut output_buffer)
