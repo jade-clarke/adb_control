@@ -135,11 +135,12 @@ impl ADBControl {
         Ok(command_output.is_empty())
     }
 
-    pub fn text(&mut self, text: &str) -> Result<bool, Box<dyn std::error::Error>> {
+    pub fn text(&mut self, text: String) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
+        let text = text.clone().replace('"', "\\\"");
         let _ = self
             .device
-            .shell_command(["input", "text", text], &mut output_buffer)
+            .shell_command(["input", "text", text.as_str()], &mut output_buffer)
             .expect("cannot get command output");
         let command_output =
             String::from_utf8(output_buffer).expect("cannot convert command output to string");
