@@ -147,12 +147,12 @@ impl ADBControl {
         Ok(command_output.is_empty())
     }
 
-    pub fn keyevent(&mut self, keyevent: i32) -> Result<bool, Box<dyn std::error::Error>> {
+    pub fn keyevent(&mut self, keyevent: &str) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
         let _ = self
             .device
             .shell_command(
-                ["input", "keyevent", &keyevent.to_string()],
+                ["input", "keyevent", &keyevent],
                 &mut output_buffer,
             )
             .expect("cannot get command output");
