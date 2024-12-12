@@ -183,4 +183,19 @@ impl ADBControl {
 
         Ok(command_output.is_empty())
     }
+
+    pub fn port_forward(&mut self, local: &str, remote: &str) -> Result<bool, Box<dyn std::error::Error>> {
+        let mut output_buffer = Vec::new();
+        let _ = self
+            .device
+            .shell_command(
+                ["forward", local, remote],
+                &mut output_buffer,
+            )
+            .expect("cannot get command output");
+        let command_output =
+            String::from_utf8(output_buffer).expect("cannot convert command output to string");
+
+        Ok(command_output.is_empty())
+    }
 }
