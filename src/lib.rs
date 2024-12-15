@@ -137,7 +137,10 @@ impl ADBControl {
 
     pub fn text(&mut self, text: String) -> Result<bool, Box<dyn std::error::Error>> {
         let mut output_buffer = Vec::new();
-        let text = text.clone().replace('"', "\\\"");
+        let text = text.clone()
+            .replace('"', "\\\"")
+            .replace(' ', "\\ ");
+
         let _ = self
             .device
             .shell_command(["input", "text", text.as_str()], &mut output_buffer)
